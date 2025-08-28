@@ -1,0 +1,124 @@
+use northwind;
+
+-- limitando para aparecer somente 10 produtos
+select * from products limit 10;
+
+delimiter //
+CREATE PROCEDURE SP_listar_pedidos()
+BEGIN
+	DECLARE contador INT DEFAULT 1;
+	DECLARE total_pedidos INT;
+    
+	SELECT COUNT(*) INTO total_pedidos FROM orders;	
+    
+	WHILE contador <= total_pedidos DO
+-- a virgula no código a baixo serve para mostrar o item do contadaor + o número a frente, no caso quando rodar a primeira vez mostra o elemento 2
+		SELECT * FROM orders LIMIT contador, 1;
+		SET contador = contador + 1;
+	END WHILE;
+END;
+//
+
+call SP_listar_pedidos();
+
+delimiter //
+CREATE PROCEDURE SP_listar_pedidos_repeat()
+BEGIN
+	DECLARE contador INT DEFAULT 0;
+	DECLARE total_pedidos INT;
+    
+	SELECT COUNT(*) INTO total_pedidos FROM orders;
+    
+    -- REPEAT: Executa até que a condição se torne verdadeira. Until = ate
+	REPEAT
+		SELECT OrderID, OrderDate FROM orders LIMIT contador, 1;
+		SET contador = contador + 1;
+		UNTIL contador > total_pedidos 
+	END REPEAT;
+END;
+//
+
+call SP_listar_pedidos_repeat();
+
+-- Criando uma procedure com laço: entrada de um valor inteiro; Repetir o print do 1 até o valor do paramentro de entrada
+delimiter //
+	create procedure sp_teste_laco(Total int)
+    begin
+		declare contador int;
+        set contador = 1;
+		while contador <= total do 
+			select 'O contador vale ', contador;
+            set contador = contador + 1;
+        end while;
+    end;
+//
+
+call sp_teste_laco(10);
+call sp_teste_laco(50);
+
+-- LOOP: Executa um bloco até ser explicitamente interrompido.
+delimiter //
+CREATE PROCEDURE listar_pedidos_loop()
+BEGIN 
+	DECLARE contador INT DEFAULT 0;
+	DECLARE total_pedidos INT;
+    
+	SELECT COUNT(*) INTO total_pedidos FROM orders;
+	repetir: LOOP -- nomeando loop
+			IF contador > total_pedidos THEN
+			LEAVE repetir;
+		END IF;
+		SELECT OrderID, OrderDate FROM orders LIMIT contador, 1;
+		SET contador = contador + 1;
+	END LOOP;
+END;
+//
+
+call listar_pedidos_loop();
+
+-- OUT: Retorna valores ao usuário.
+delimiter //
+CREATE PROCEDURE SP_contar_produtos_categoria(IN categoria_id INT, OUT total_produtos INT)
+BEGIN
+	SELECT COUNT(*) INTO total_produtos FROM products
+	WHERE CategoryID = categoria_id;
+END;
+//
+-- Chamada do exemplo OUT:
+SET @total = 0;
+CALL SP_contar_produtos_categoria(1, @total);
+SELECT 'Exitem ',@total , 'registros na tabela';
+
+-- Mesma procedure sem a utilização do OUT
+delimiter //
+CREATE PROCEDURE SP_contar_produtos_categoria_2(IN categoria_id INT)
+BEGIN
+	SELECT 'Existem ',COUNT(*), ' produtos para essa categoria' FROM products
+	WHERE CategoryID = categoria_id;
+END;
+//
+CALL SP_contar_produtos_categoria_2(1);
+
+-- INOUT: Recebe e retorna valores.
+delimiter //
+CREATE PROCEDURE SP_atualizar_estoque(INOUT produto_id INT, IN quantidade_adicional INT)
+BEGIN
+	UPDATE products SET UnitsInStock = UnitsInStock + quantidade_adicional
+		WHERE ProductID = produto_id;
+	SELECT UnitsInStock INTO produto_id FROM products
+		WHERE ProductID = produto_id;
+END;
+//
+-- Chamada do exemplo INOUT:
+-- adicionando 5
+SET @produto_id = 10;
+CALL sp_atualizar_estoque(@produto_id, 5);
+SELECT @produto_id;
+
+select * from products where productid = 10;
+
+-- adicionando mais 5
+SET @produto_id = 10;
+CALL sp_atualizar_estoque(@produto_id, 5);
+SELECT @produto_id;
+select * from products where productid = 10;

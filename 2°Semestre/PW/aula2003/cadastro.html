@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Se cadastre para entrar no site mais legal!!</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head>
+<body>
+    <h2>Cadastro de Usuário</h2>
+    <form>
+        <label for="txtUsuario">Nome do Usuário:</label>
+        <input type="text" id="txtUsuario" placeholder="Digite o nome do seu usuário" required>
+
+        <label for="txtSenha">Senha do Usuário:</label>
+        <input type="password" id="txtSenha" name="txtSenha" placeholder="Digite uma senha segura" required>
+        
+        <label for="txtdtNascimento">Data de Nascimento:</label>
+        <input type="date" id="txtdtNascimento" name="txtdtNascimento" required>
+    
+        <label for="selTipoConta">Tipo de Conta</label>
+        <select name="selTipoConta" id="selTipoConta" required>
+            <option value="" disabled selected>Selecione um tipo</option>
+            <option value="admin">Administrador</option>
+            <option value="usuario">Usuário padrão</option>
+            <option value="convidado">Convidado</option>
+        </select>
+
+        <button type="button" onclick="cadastrar()">Cadastrar</button>
+    </form>
+</body>
+</html>

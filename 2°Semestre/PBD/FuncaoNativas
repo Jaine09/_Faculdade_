@@ -1,0 +1,108 @@
+-- exemplo 1
+delimiter //
+CREATE PROCEDURE SP_listar_produtos()
+BEGIN
+	DECLARE nome_produto VARCHAR(100);
+	DECLARE preco_produto DECIMAL(10,2);
+	DECLARE cursor_finalizado BOOLEAN DEFAULT FALSE;
+	DECLARE cursor_produtos CURSOR FOR SELECT ProductName, UnitPrice FROM products;
+	DECLARE CONTINUE HANDLER FOR NOT FOUND SET cursor_finalizado = TRUE;
+	OPEN cursor_produtos;
+	leitura: LOOP
+		FETCH cursor_produtos INTO nome_produto, preco_produto;
+		IF cursor_finalizado THEN
+			LEAVE leitura;
+		END IF;
+	SELECT nome_produto, preco_produto;
+	END LOOP;
+	CLOSE cursor_produtos;
+END;
+//
+
+call sp_listar_produtos();
+
+-- exemplo 2
+delimiter //
+CREATE PROCEDURE SP_listar_clientes_sem_pedidos()
+BEGIN
+	DECLARE cliente_nome VARCHAR(100);
+	DECLARE cursor_finalizado BOOLEAN DEFAULT FALSE;
+	DECLARE cursor_clientes CURSOR FOR SELECT CompanyName FROM customers c
+	WHERE NOT EXISTS (SELECT 1 FROM orders o WHERE o.CustomerID = c.CustomerID);
+	DECLARE CONTINUE HANDLER FOR NOT FOUND SET cursor_finalizado =
+	TRUE;
+	OPEN cursor_clientes;
+	leitura: LOOP
+		FETCH cursor_clientes INTO cliente_nome;
+			IF cursor_finalizado THEN
+				LEAVE leitura;
+		END IF;
+	SELECT CONCAT('Cliente sem pedidos: ', cliente_nome) AS Resultado;
+	END LOOP;
+	CLOSE cursor_clientes;
+END;
+//
+
+call SP_listar_clientes_sem_pedidos();
+
+-- exercicio 1
+
+delimiter //
+	CREATE PROCEDURE SP_listaPedidos_juncao()
+    BEGIN
+    DECLARE codCli varchar(5);
+    DECLARE nomeContato varchar(50);
+    DECLARE codPed int;
+    DECLARE dataPed datetime;
+    DECLARE cursor_finalizado BOOLEAN DEFAULT FALSE;
+    DECLARE cursor_clientePedido CURSOR FOR 
+		SELECT customers.customerId, customers.contactName, orders.orderId, orders.orderDate FROM customers 
+        INNER JOIN orders ON customers.customerId = orders.customerId;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND
+    SET cursor_finalizado = TRUE;
+    OPEN cursor_clientePedido;
+		laço: LOOP
+			FETCH cursor_clientePedido INTO codCli, nomeContato, codPed, dataPed;
+				IF 	cursor_finalizado THEN
+					LEAVE laço;
+				END IF;
+                SELECT codCli, nomeContato, codPed, dataPed;
+			END LOOP;
+		CLOSE cursor_clientePedido;
+    END;
+//
+
+call SP_listaPedidos_juncao();
+
+-- FUNÇÕES NATIVAS
+select 4/2; -- divisão
+select 4 div 2; -- divisão inteira
+
+select abs(2); -- retorna o número absoluto
+select abs(-32);
+
+select round(-1.23); -- arredondamento
+select round(-1.58);
+select round(1.58);
+select round(1.298, 1); -- arredonda somente uma casa decimal
+select round(1.298, 0); -- arredonda sem as casas decimais
+select round(23.298, -1);
+
+select concat_ws(","," FIRST NAME"," SECOND NAME"," LAST NAME"); -- junta os textos
+select concat_ws(","," FIRST NAME",null," LAST NAME");
+select lcase('MYSQL'); -- deixa todas as letras em minusculo
+select replace('www.mysql.com.br','w','Ww');
+select concat(companyName,'',contactName) from customers;
+
+select datediff('1997-12-31 23:59:59','1997-12-30'); -- número de dias entre a data inicial e a data final
+select datediff('1997-11-31 23:59:59','1997-12-31');
+select timediff('2000:01:01 00:00:00', '2000:01:01 00:00:00.000001'); -- quatidade de tempo entre o tempo inicial e tempo final
+select timediff('1997-12-31 23:59:59', '1997-12-30 01:01:01.000002'); -- formata para mostrar o dia da semana o mês e o ano
+
+
+-- Inner join com três tabelas
+SELECT customers.customerId as codCli, customers.companyName as Nome, customers.address as endereço, orders.orderId as codPed, orders.orderDate as dataPed, 
+	sum(`order details`.unitprice * `order details`.quantity) as valorTotalPedido, 
+	sum(quantity) as qtdItem
+FROM customers INNER JOIN orders ON customers.customerId = orders.customerId INNER JOIN `order details` ON orders.orderId = `order details`.orderId
+GROUP BY customers.customerId, customers.companyName, customers.address, orders.orderId, orders.orderDate;

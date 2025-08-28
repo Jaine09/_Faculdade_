@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        class Jiboia {
+                nome = "";
+                especie = "réptil";
+                tamanhoMax = 4;
+
+            constructor(novoNome) {
+                this.nome = novoNome;
+            }
+
+            movimentando() {
+                console.log(`${this.nome} rastejando....`);
+            }
+
+            comendo() {
+                console.log(`${this.nome} se alimentando...`);
+            }
+        }
+        const jiboia1 = new Jiboia("Luna");
+        console.log(`O nome da Jiboia 01 é: ${jiboia1.nome}`);
+        jiboia1.comendo();
+
+        const jiboia2 = new Jiboia("Meg");
+        console.log(`O nome da Jiboia 02 é: ${jiboia2.nome}`);
+        jiboia2.movimentando();
+    </script>
+</body>
+
+</html>

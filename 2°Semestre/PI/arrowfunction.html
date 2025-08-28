@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arrow function</title>
+</head> 
+<body>
+    <h1>Arrow function</h1>
+    <label for="numero1">Número 1:</label>
+    <input type="text" id="numero1" placeholder="Número 1"> 
+    <br><br>
+    <label for="numero1">Número 2:</label>
+    <input type="text" id="numero2" placeholder="Número 2">
+    <button onclick="multiplicar()">Multiplicar</button>
+
+    <script>
+        const soma = (num1,num2) => console.log(num1 + num2);
+
+        soma(5,5);
+        soma(2,2);
+
+        const multiplicar = () => {
+            let num1 = Number(document.getElementById('numero1').value);
+            let num2 = Number(document.getElementById('numero2').value);
+
+            alert(num1*num2)
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+-- formas de listar os clientes que NÃo tem pedido
+
+select c.customerid,c.contactname, c.address from customers as c
+where customerid not in (select o.customerid from orders as o); 
+
+select c.customerid,c.contactname, c.address, o.orderid,o.orderdate from customers as c
+left outer join orders as o 
+on c.customerid = o.customerid
+where orderid is null;
+
+select c.customerid,c.contactname, c.address, o.orderid,o.orderdate from orders as o
+right join customers as c 
+on c.customerid = o.customerid
+where orderid is null;

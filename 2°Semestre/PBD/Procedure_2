@@ -1,0 +1,144 @@
+delimiter //
+create procedure sp_listaProdutosForn()
+begin
+select products.productid, products.ProductName, products.unitprice, products.UnitsInStock,
+		suppliers.supplierid, suppliers.CompanyName, suppliers.ContactName, suppliers.Phone
+        from products inner join suppliers
+        on suppliers.SupplierID = products.SupplierID;
+end;
+//
+
+call sp_listaProdutosForn();
+
+-- mostrando a tabela
+
+drop procedure sp_listaProdutosForn;
+
+delimiter //
+create procedure sp_listaProdutosForn()
+begin
+select products.productid, products.ProductName, products.unitprice, products.UnitsInStock,
+		suppliers.supplierid, suppliers.CompanyName, suppliers.ContactName, suppliers.Phone
+        from products inner join suppliers
+        on suppliers.SupplierID = products.supplierId;
+end;
+//
+
+drop procedure sp_listaProdutosFornById;
+
+-- filtrando pelo id do fornecedor
+
+delimiter //
+create procedure sp_listaProdutosFornById(fornID int)
+begin
+select products.productid, products.ProductName, products.unitprice, products.UnitsInStock,
+		suppliers.supplierid, suppliers.CompanyName, suppliers.ContactName, suppliers.Phone
+        from products inner join suppliers
+        on suppliers.SupplierID = products.supplierId
+        where suppliers.supplierId = fornId;
+end;
+//
+
+call sp_listaProdutosFornById(1);
+
+-- filtrando para que se digitar 0 aparecer a tabela inteira
+
+delimiter //
+create procedure sp_listaProdutosFornByIf(fornID int)
+begin
+if fornID > 0 then
+	select products.productid, products.ProductName, products.unitprice, products.UnitsInStock,
+		suppliers.supplierid, suppliers.CompanyName, suppliers.ContactName, suppliers.Phone
+        from products inner join suppliers
+        on suppliers.SupplierID = products.supplierId
+        where suppliers.supplierId = fornId;
+else
+	select products.productid, products.ProductName, products.unitprice, products.UnitsInStock,
+		suppliers.supplierid, suppliers.CompanyName, suppliers.ContactName, suppliers.Phone
+        from products inner join suppliers
+        on suppliers.SupplierID = products.supplierId;
+end if;
+end;
+//
+
+call sp_listaProdutosFornByIf(1);
+
+-- ver a estrutura  da tabela
+desc shippers; 
+
+-- Procedure com dois parametros
+
+delimiter //
+create procedure sp_insereShip(txtComp varchar(40), txtPhone varchar(24))
+begin
+	insert into shippers (CompanyName, Phone) values (txtComp, txtPhone);
+end;
+//
+
+call sp_insereShip('Correios', '1199999-9999');
+select * from shippers;
+
+-- Filtrando para não passar valor nulo no primeiro parametro
+
+delimiter //
+create procedure sp_insereShipIf(txtComp varchar(40), txtPhone varchar(24))
+begin
+	if isNull(txtComp) then 
+		select 'Comapnia com valor nulo';
+	else
+		insert into shippers (CompanyName, Phone) values (txtComp, txtPhone);
+	end if;
+end;
+//
+
+
+drop procedure sp_insereShipIf;
+call sp_insereShipIf(null,null);
+call sp_insereShipIf('MercadoLivre',null);
+select * from shippers;
+
+ -- Exercicio 01
+-- Procedure que liste todos os produtos, quando digitar 0 aparecer lista completo, caso inserido um valor incorreto apresentar mensagem de erro
+
+DROP PROCEDURE IF EXISTS sp_listaProdCat;
+
+DELIMITER //
+CREATE PROCEDURE sp_listaProdCat(IN categoryID int)
+BEGIN
+	IF categoryID IS null THEN
+		SELECT 'Parameter required!';
+    ELSEIF categoryId = 0 then
+		SELECT * FROM products INNER JOIN categories ON products.CategoryId = categories.CategoryId;
+	ELSE
+		SELECT * FROM products INNER JOIN categories ON products.CategoryId = categories.CategoryId
+		WHERE products.CategoryId = categoryID;
+	END IF;
+END;
+//
+
+call sp_listaProdCat(null);
+call sp_listaProdCat(0);
+call sp_listaProdCat(2);
+
+-- Ex02
+-- Criar uma procedure que permite fazer um insert completo, consistir os parametro em ntrada com if, caso algum estiver errado enviar mensagem de erro
+
+DROP PROCEDURE IF EXISTS sp_insertCat;
+
+DELIMITER //
+CREATE PROCEDURE sp_insertCat(IN categoryName varchar(15), IN categoryDescription MEDIUMTEXT)
+BEGIN
+	IF categoryName IS null OR categoryDescription IS null THEN
+		SELECT 'Parameters required!';
+    ELSE
+		INSERT INTO categories(CategoryName, Description) VALUES(categoryName, categoryDescription);
+	END IF;
+END;
+//
+
+call sp_insertCat(null, "descricao muita louca");
+call sp_insertCat("drogas", null);
+call sp_insertCat(null, null);
+call sp_insertCat("drogas", "descricao muita louca");
+
+select * from categories where CategoryName = "drogas";

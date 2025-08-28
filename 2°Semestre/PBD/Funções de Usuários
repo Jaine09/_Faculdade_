@@ -1,0 +1,81 @@
+-- Funções de usuário
+use northwind;
+delimiter //
+-- CRIA A FUNÇÃO
+CREATE FUNCTION fu_Concat(nome varchar(50))
+		returns varchar(60)
+		deterministic
+	begin
+		declare hello varchar(60);
+		set hello = concat('Hello ' , nome);
+		return hello;
+	end;
+//
+
+select fu_Concat("Jaíne");
+select fu_Concat(companyName), fu_Concat(contactName) from customers;
+select fu_Concat(productName) from products;
+
+DELIMITER //
+-- FUNÇÃO COM DESVIO DE FLUXO (IF)
+	CREATE FUNCTION TESTEIF (CODIGOPROD INT)
+		RETURNS VARCHAR(50)
+		DETERMINISTIC
+	BEGIN
+		DECLARE QTDPRODUTO INT;
+		DECLARE MSG VARCHAR(50);
+		SELECT unitsinstock INTO QTDPRODUTO -- into está jogando o valor que está em unitsinstock na variavel qtdproduto
+		FROM products WHERE productid = CODIGOPROD;
+			IF QTDPRODUTO > 50 THEN
+				SET MSG = 'Produto em estoque ';
+			ELSE
+				IF QTDPRODUTO = 0 THEN
+					SET MSG = 'PRODUTO ZERADO ';
+				ELSE
+					SET MSG = 'PRODUTO COM ESTOQUE BAIXO';
+				END IF;
+			END IF;
+		RETURN MSG;
+END;
+//
+
+select TESTEIF(10);
+select * from products where productid = 10;
+select productid as codigoproduto, TESTEIF(productid) as MSG from products;
+
+-- Criar uma função do nome fu_QtdPedidos que receba o código do cliente(cutomerID) e retorne quantos pedidos ele fez
+
+delimiter //
+ CREATE fUNCTION fu_QTDPedido(codigoCLiente VARCHAR(5))
+	RETURNS int
+	DETERMINISTIC
+ BEGIN
+	DECLARE qtdPedido int;
+    SELECT count(orderid) into qtdPedido from orders where customerid = codigoCliente group by customerid;
+    return qtdPedido;
+ END;
+ //
+ 
+ select * from customers;
+ select fu_QTDPedido('ALFKI');
+ select customerid as cliente, fu_QTDPedido(customerid) as qtdPedido from customers;
+
+-- Criar uma função de fu_atualizarPrecoProd que receba o codigo do produto e o novo preço. A Função deve atualizar o preço do produto que tenha o código igual ao do parametro de entrada. O retorno da função é uma mensagem com o preço antigo e o preço novo, juntamente com o código do produto
+delimiter //
+	CREATE FUNCTION fu_atualizarPrecoProd(codProd INT, novoPreco DECIMAL(10,4))
+    RETURNS varchar(100)
+    DETERMINISTIC
+    BEGIN
+		DECLARE msg varchar(100);
+        DECLARE precoAntigo DECIMAL(10,4);
+        SELECT unitPrice into precoAntigo FROM products where productid = codProd; -- pegando o preço antigo e jogando na variavel precoAntigo
+        UPDATE products SET unitPrice = novoPreco WHERE productid = codProd;
+        SET msg = concat('o produto de código ',codProd, ' foi atualizado de ',precoAntigo, ' para o valor ',novoPreco );
+        RETURN msg;
+    END;
+//
+
+select * from products where productid = 1;
+drop function fu_atualizarPrecoProd;
+select fu_atualizarPrecoProd(1,25);
+

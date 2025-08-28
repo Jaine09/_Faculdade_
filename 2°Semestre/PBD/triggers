@@ -1,0 +1,50 @@
+USE NORTHWIND;
+
+create table tab_audit(
+codAudit int primary key auto_increment,
+acaoAudit varchar(20),
+hostname varchar(20),
+loginAudit varchar(20),
+dataAudit datetime,
+idObj int
+);
+
+ALTER TABLE tab_audit ADD COLUMN unitprice dec(10,2);
+ALTER TABLE tab_audit ADD COLUMN unitpriceNovo dec(10,2);
+
+
+DROP TRIGGER TR_audit_prod;
+delimiter //
+CREATE TRIGGER TR_audit_prod
+AFTER UPDATE ON products
+FOR EACH ROW
+BEGIN
+	INSERT INTO tab_audit(acaoAudit, hostname, loginAudit, dataAudit,idObj, unitprice, unitpriceNovo) 
+		VALUES ('UPDATE', @@hostname, @@server_id, NOW(),OLD.productid, OLD.unitprice, NEW.unitprice);
+END;
+//
+
+select * from products where productid = 1;
+UPDATE products SET unitprice = 150 WHERE productid = 1;
+
+select * from northwind.tab_audit;
+
+-- Capturando um insert
+delimiter //
+CREATE TRIGGER TR_audit_ins_prod
+AFTER INSERT ON products
+FOR EACH ROW
+BEGIN
+	INSERT INTO tab_audit(acaoAudit, hostname, loginAudit, dataAudit,idObj,unitprice,unitpriceNovo)
+		VALUES ('INSERT', @@hostname, current_user(), NOW(), last_insert_id(),NEW.unitprice, NEW.unitprice);
+END;
+//
+DROP TRIGGER TR_audit_ins_prod;
+select * from northwind.tab_audit;
+select * from products;
+
+insert into products(productname,quantityperunit,unitprice,unitsinstock,unitsonorder,reorderlevel,discontinued)
+VALUES ('banana', '1kg', 15.00, 50, 0, 10, 0);
+
+insert into products(productname,quantityperunit,unitprice,unitsinstock,unitsonorder,reorderlevel,discontinued)
+VALUES ('morango', 'caixas', 20.00, 50, 0, 10, 0);

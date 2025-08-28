@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classes e objetos: Fábrica de carros</title>
+</head>
+    <h1>Classes e objetos: Fábrica de Carros</h1>
+<body>
+    <script>
+        class Carro {
+            marca = "Ford";
+            modelo = "T";
+            cor = "";
+            ano = 1908;
+            velocidade = 0;
+
+            constructor(novaCor, novaMarca, novoModelo) {
+                this.cor = novaCor;
+                this.marca = novaMarca;
+                this.modelo = novoModelo;
+            }
+
+            acelerar() {
+                this.velocidade += 10;
+            }
+
+            // frear() {
+            //     this.velocidade -= 10;
+            // }
+
+        }
+
+        // construindo objeto da classe carro
+        const meuCarro = new Carro("Branco", "Jeep", "Renegade");
+        const outroCarro = new Carro("Azul", "Volkswagen", "Gol");
+
+        alert(`Carro 1 - Cor: ${meuCarro.cor}\nMarca: ${meuCarro.marca}\nModelo: ${meuCarro.modelo}`); // Carro 01
+        alert(`Carro 2 - Cor: ${outroCarro.cor}\nMarca: ${outroCarro.marca}\nModelo: ${outroCarro.modelo}`); // Carro 02
+
+        outroCarro.cor("Verde");
+        alert(`Carro 2 - Nova Cor: ${outroCarro.cor}`);
+
+        meuCarro.acelerar();
+        meuCarro.acelerar();
+        alert(`Carro 1 - Velocidade: ${meuCarro.velocidade}`);
+
+    </script>
+</body>
+
+</html>

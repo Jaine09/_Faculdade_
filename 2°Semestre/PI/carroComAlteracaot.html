@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classes e objetos: Fábrica de Carros</title>
+</head>
+
+<body>
+    <script>
+        class Carro {
+            marca = "Ford";
+            modelo = "T";
+            cor = "";
+            ano = 1908;
+            velocidade = 0;
+
+            constructor(novaCor, novaMarca, novoModelo) {
+                this.cor = novaCor;
+                this.marca = novaMarca;
+                this.modelo = novoModelo;
+            }
+
+            acelerar(...args) {
+                if (args.length === 0) {
+                    // Sem argumentos
+                    this.velocidade += 10;
+                } else if (args.length === 1
+                    && typeof args[0] === "number") {
+                    // Um argumento
+                    this.velocidade += args[0];
+                } else {
+                    console.log("Parâmetro inválido.");
+                }
+
+            }
+
+            // frear() {
+            //     this.velocidade -= 10;
+            // }
+
+        }
+
+        const meuCarro = new Carro("Branco", "Jeep", "Renegade");
+        meuCarro.acelerar();
+        meuCarro.acelerar(20);
+        alert(`Carro 1 - Cor: ${meuCarro.cor}\nMarca: ${meuCarro.marca}\nModelo: ${meuCarro.modelo}\nVelocidade: ${meuCarro.velocidade}`);
+
+    </script>
+</body>
+
+</html>

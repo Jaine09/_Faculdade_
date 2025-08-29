@@ -12,6 +12,7 @@ vendor/
 # Arquivos de build
 dist/
 build/
+out/
 
 # Arquivos temporários
 *.tmp

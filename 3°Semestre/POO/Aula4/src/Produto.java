@@ -11,6 +11,13 @@ public class Produto {
         this.codigoDeBarra = codigoDeBarra;
     }
 
+    public double getPreco(){
+        return this.precoUnitario*quantidade;
+    }
+
+    public void fazerCompra(){
+        System.out.printf("%s %s por R$%s\n", this.quantidade, this.nome, getPreco());
+    }
 
     public String getNome() {
         return nome;
@@ -42,5 +49,14 @@ public class Produto {
 
     public void setCodigoDeBarra(int codigoDeBarra) {
         this.codigoDeBarra = codigoDeBarra;
+    }
+
+    @Override
+    public String toString() {
+        return "[Produto]" +
+                " nome = " + nome + '|' +
+                " quantidade = " + quantidade + '|' +
+                " precoUnitario = " + precoUnitario + '|' +
+                " codigoDeBarra = " + codigoDeBarra;
     }
 }

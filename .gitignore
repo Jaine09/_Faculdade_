@@ -1,0 +1,53 @@
+# Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos de log
+*.log
+
+# Diretórios de dependências
+node_modules/
+vendor/
+
+# Arquivos de build
+dist/
+build/
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.swp
+
+# Configurações do editor
+.vscode/
+.idea/
+*.iml
+*.sublime-project
+*.sublime-workspace
+
+# Arquivos Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Arquivos Java
+*.class
+
+# Arquivos C/C++
+*.o
+*.obj
+*.exe
+
+# Arquivos do sistema Git
+.git/
+.gitignore
+
+# Arquivos de pacotes
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Outros
+.env
